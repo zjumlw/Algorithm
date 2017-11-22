@@ -1,5 +1,6 @@
 package chapter_01;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,29 +15,52 @@ class Fibonacci{
 			return 1;
 		}else{
 			long[][] mat = {{1,1},{1,0}};
-			long[][] matrix = getMaxtrix(mat, n % 2 == 1 ? n -1 : n -2);
-			if(n % 2 == 1) 
-				result = matrix[1][1];
-			else
-				result = matrix[0][0] + matrix[1][0];
+			//方法1------
+//			long[][] matrix = getMaxtrix(mat, n % 2 == 1 ? n -1 : n -2);
+//			if(n % 2 == 1) {
+//				result = matrix[0][0];
+//			}
+//			else{
+//				result = matrix[0][0] + matrix[1][0];
+//			}
+			//方法1------
+			
+			//方法2------
+			long[][] matrix = getMaxtrix(mat, n - 1);
+			result = matrix[0][0];
+			//方法2------
+			
 		}
 		return result;
 	}
 
-	private static long[][] getMaxtrix(long[][] mat, int n) {
-		// TODO Auto-generated method stub
+	/*
+	 * 利用矩阵快速幂的方法
+	 */
+	public static long[][] getMaxtrix(long[][] mat, int n) {
 		long[][] retMat = new long[mat.length][mat[0].length];
 		for(int i = 0; i < retMat.length; i++)
-			retMat[i][i] = 1;
+			retMat[i][i] = 1;	//得到一个单位矩阵
 		
 		long[][] tmp = mat;
-		for(; n != 0; n >>= 1){	//快速乘法
-			if((n & 1) == 1){
-				retMat = matMulti(retMat, tmp);
-			}
-				tmp = matMulti(tmp, tmp);
-		}
+		//方法1---
+//		for(; n != 0; n >>= 1){	//快速乘法,n >>= 1就是n=n/2
+//			if((n & 1) == 1){	//n二进制表示时，最低位是不是1
+//				retMat = matMulti(retMat, tmp);	 
+//			}
+//				tmp = matMulti(tmp, tmp);
+//		}
+		//方法1---
 		
+		//方法2---
+		while(n > 0){
+			if((n & 1) == 1)
+				retMat = matMulti(retMat, tmp);
+			n >>= 1;
+			tmp = matMulti(tmp, tmp);
+			
+		}
+		//方法2---
 		return retMat;
 	}
 	
@@ -52,13 +76,12 @@ class Fibonacci{
 
 public class FiboTest {
 	private	static Map cache = new ConcurrentHashMap<>(); 
+	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println(fibonacciArray(100));
-		System.out.println(fibonacciQuick(100));
-		System.out.println(fibonacciHashMap(100));
-		System.out.println(Fibonacci.F(100));
-		
+//		System.out.println(fibonacciArray(100));
+		System.out.println(fibonacciQuick(30));
+//		System.out.println(fibonacciHashMap(20));
+		System.out.println(Fibonacci.F(30));
 		
 	}
 
